@@ -1,20 +1,16 @@
 import { z } from "zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useOrderContext } from "@/pages/Home";
-import { orderSchema } from "@/schema";
+
 import { Button } from "../ui/button";
-import { actionList } from "@/constants";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "../ui/form";
-import { Textarea } from "../ui/textarea";
+
 import {
   Select,
   SelectContent,
@@ -22,15 +18,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import {
+  deliverTypeSchema,
+  userProductSchema,
+} from "@/features/orderNavigation/orderNavigationSchema";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { generateMessage } from "@/lib/utils";
+import { previousStep } from "@/features/orderNavigation/orderNavigationSlice";
 
-const deliverySchema = orderSchema.pick({
-  order: true,
-  orderType: true,
-});
-type DeleveryType = z.infer<typeof deliverySchema>;
+type DeleveryType = {
+  deliveryType: z.infer<typeof deliverTypeSchema>;
+  orders: z.infer<typeof userProductSchema>[];
+};
 
 function Order() {
-  const { dispatch, state } = useOrderContext();
+  const dispatch = useAppDispatch();
+  const { currentStep, deliveryType, userInfo, orders } = useAppSelector(
+    (state) => state.orderNavigation
+  );
+
   const senderPhoneId = import.meta.env.VITE_META_PHONE_NUMBER_ID;
 
   const WHATSAPP_API_URL = `https://graph.facebook.com/v21.0/${senderPhoneId}/messages`;
@@ -38,25 +44,25 @@ function Order() {
   console.log(WHATSAPP_API_URL);
 
   const form = useForm<DeleveryType>({
-    resolver: zodResolver(deliverySchema),
     defaultValues: {
-      orderType: state.orderType,
-      order: state.order,
+      deliveryType,
+      orders,
     },
   });
 
   const onSubmit = async (data: DeleveryType) => {
-    console.log(state.order);
     console.log(import.meta.env.VITE_META_FACEBOOK_TOKEN);
+    if (!userInfo) return;
+    const message = generateMessage({ userInfo, orders });
 
     try {
       const response = await axios.post(
         WHATSAPP_API_URL,
         {
           messaging_product: "whatsapp",
-          to: state.phone,
+          to: userInfo?.whatsapp,
           type: "text",
-          text: { body: data.order },
+          text: { body: message },
         },
         {
           headers: {
@@ -73,29 +79,12 @@ function Order() {
 
   return (
     <div>
-      <h3>Etape {state.currentPage} : Votre commande</h3>
+      <h3>Etape {currentStep + 1} : Votre commande</h3>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
-            name="order"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Commande</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tapez votre commande ici"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="orderType"
+            name="deliveryType"
             render={({ field }) => (
               <FormItem>
                 <Select
@@ -123,7 +112,7 @@ function Order() {
           <div className="flex gap-6 py-4">
             <Button
               type="button"
-              onClick={() => dispatch({ type: actionList.PREV_PAGE })}
+              onClick={() => dispatch(previousStep())}
               className="border-2 border-orange-600 bottom-2 bg-transparent text-orange-600 hover:text-white hover:bg-orange-600 hover:border-orange-600 py-5 px-10"
             >
               Precedent
@@ -132,7 +121,7 @@ function Order() {
               type="submit"
               className="bg-orange-500 hover:bg-orange-600  py-5 px-10 border-2 border-orange-500 hover:border-orange-600"
             >
-              Envoyez à KINTACOS
+              Envoyez à KINFOODIES
             </Button>
           </div>
         </form>
@@ -143,7 +132,9 @@ function Order() {
 
 export default Order;
 
-const deliveryTypeList: { type: DeleveryType["orderType"]; name: string }[] = [
-  { type: "delivery", name: "Livraison" },
-  { type: "pickup", name: "A emporter" },
-];
+const deliveryTypeList: { type: DeleveryType["deliveryType"]; name: string }[] =
+  [
+    { type: "standard", name: "Standard" },
+    { type: "express", name: "Express" },
+    { type: "pickup", name: "A emporter" },
+  ];

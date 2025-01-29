@@ -1,10 +1,15 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOrderContext } from "@/pages/Home";
+
+import { userInfoSchema } from "@/features/orderNavigation/orderNavigationSchema";
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import {
+  nextStep,
+  setUserInfo,
+} from "@/features/orderNavigation/orderNavigationSlice";
+
 import { Button } from "../ui/button";
-import { actionList } from "@/constants";
-import { informationSchema } from "@/schema";
 import {
   Form,
   FormControl,
@@ -17,37 +22,30 @@ import { Input } from "../ui/input";
 import { PhoneInput } from "../common/phone-input";
 import { Textarea } from "../ui/textarea";
 
-type InfoType = z.infer<typeof informationSchema>;
+type InfoType = z.infer<typeof userInfoSchema>;
 
 function Information() {
-  const { dispatch, state } = useOrderContext();
+  const dispatch = useAppDispatch();
+  const { currentStep, userInfo } = useAppSelector(
+    (state) => state.orderNavigation
+  );
 
   const form = useForm<InfoType>({
-    resolver: zodResolver(informationSchema),
-    defaultValues: {
-      firstname: state.firstname,
-      lastname: state.lastname,
-      phone: state.phone,
-      whatsapp: state.whatsapp,
-      address: state.address,
-      city: state.city,
-      district: state.district,
-      moreInfo: state.moreInfo,
-    },
+    resolver: zodResolver(userInfoSchema),
+    defaultValues: userInfo,
   });
 
   const onSubmit = (data: InfoType) => {
-    console.log(data);
-    dispatch({ type: actionList.SET_USER_INFO, payload: data });
-    dispatch({ type: actionList.NEXT_PAGE });
+    dispatch(setUserInfo(data));
+    dispatch(nextStep());
   };
 
   return (
     <div>
-      <h3>Etape {state.currentPage} : Vos informations</h3>
+      <h3 className="mb-3">Etape {currentStep + 1} : Vos informations</h3>
 
       <Form {...form}>
-        <form>
+        <form className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
             <FormField
               control={form.control}
