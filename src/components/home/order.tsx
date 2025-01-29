@@ -24,7 +24,10 @@ import {
 } from "@/features/orderNavigation/orderNavigationSchema";
 import { useAppDispatch, useAppSelector } from "@/app/hook";
 import { generateMessage } from "@/lib/utils";
-import { previousStep } from "@/features/orderNavigation/orderNavigationSlice";
+import {
+  previousStep,
+  setDeliveryType,
+} from "@/features/orderNavigation/orderNavigationSlice";
 
 type DeleveryType = {
   deliveryType: z.infer<typeof deliverTypeSchema>;
@@ -50,7 +53,7 @@ function Order() {
     },
   });
 
-  const onSubmit = async (data: DeleveryType) => {
+  const onSubmit = async () => {
     console.log(import.meta.env.VITE_META_FACEBOOK_TOKEN);
     if (!userInfo) return;
     const message = generateMessage({ userInfo, orders });
@@ -88,7 +91,12 @@ function Order() {
             render={({ field }) => (
               <FormItem>
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    dispatch(
+                      setDeliveryType(value as DeleveryType["deliveryType"])
+                    );
+                  }}
                   defaultValue={field.value}
                 >
                   <FormControl>

@@ -35,6 +35,12 @@ const orderNavigationSlice = createSlice({
     setUserInfo(state, action: PayloadAction<z.infer<typeof userInfoSchema>>) {
       state.userInfo = action.payload;
     },
+    setDeliveryType(
+      state,
+      action: PayloadAction<z.infer<typeof deliverTypeSchema>>
+    ) {
+      state.deliveryType = action.payload;
+    },
     addProduct(
       state,
       action: PayloadAction<z.infer<typeof userProductSchema>>
@@ -74,6 +80,7 @@ export const {
   addProduct,
   removeProduct,
   setUserInfo,
+  setDeliveryType,
 } = orderNavigationSlice.actions;
 
 export default orderNavigationSlice.reducer;

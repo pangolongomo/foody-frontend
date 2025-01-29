@@ -159,7 +159,7 @@ function Information() {
                 <FormLabel>Bio</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Tell us a little bit about yourself"
+                    placeholder="Parlez-nous un peu de vous"
                     className="resize-none"
                     {...field}
                   />
