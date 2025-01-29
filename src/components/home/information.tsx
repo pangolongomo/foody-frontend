@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrderContext } from "@/pages/Home";
 import { Button } from "../ui/button";
 import { actionList } from "@/constants";
-import { informationSchema, orderSchema } from "@/schema";
+import { informationSchema } from "@/schema";
 import {
   Form,
   FormControl,
