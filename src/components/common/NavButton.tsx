@@ -13,13 +13,15 @@ function NavButton({ children, path, isNavLink = true }: Props) {
         <NavLink
           to={path}
           className={({ isActive }) =>
-            `hover:text-blue-600 font-medium ${isActive && "text-blue-600"}`
+            `hover:text-[#ed1b24] font-semibold text-lg ${
+              isActive && "text-[#ed1b24]"
+            }`
           }
         >
           <li key={path}>{children}</li>
         </NavLink>
       ) : (
-        <Link to={path} className="hover:text-blue-600">
+        <Link to={path} className="hover:text-[#ed1b24]">
           {children}
         </Link>
       )}

@@ -3,9 +3,13 @@ import { Link } from "react-router";
 import NavButton from "../common/NavButton";
 import ToggleNavButton from "../common/ToggleNavButton";
 import { navRoutes } from "@/lib/navRoutes";
+import { Badge } from "../ui/badge";
+import { useAppSelector } from "@/app/hook";
+import { Icon } from "@iconify/react";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { orders } = useAppSelector((state) => state.orderNavigation);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -23,6 +27,10 @@ function Header() {
               {route.label}
             </NavButton>
           ))}
+          <Badge variant="default" className="space-x-1 hover:bg-[#ed1b24]">
+            <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
+            <span>{orders.length}</span>
+          </Badge>
         </ul>
 
         <ToggleNavButton isOpen={isOpen} toggleMenu={toggleMenu} />
@@ -34,6 +42,10 @@ function Header() {
               {route.label}
             </NavButton>
           ))}
+          <Badge variant="default" className="space-x-1 hover:bg-[#ed1b24]">
+            <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
+            <span>{orders.length}</span>
+          </Badge>
         </ul>
       )}
     </header>
