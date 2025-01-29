@@ -54,7 +54,7 @@ const ShopBadge = () => {
     <Badge
       variant="default"
       className="space-x-1 hover:bg-[#ed1b24] cursor-pointer"
-      onClick={() => navigate("/orders")}
+      onClick={() => navigate("/order")}
     >
       <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
       <span>{orders.length}</span>

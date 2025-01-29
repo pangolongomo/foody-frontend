@@ -1,7 +1,6 @@
 import { z } from "zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-
 import { Button } from "../ui/button";
 import {
   Form,
@@ -10,7 +9,6 @@ import {
   FormItem,
   FormMessage,
 } from "../ui/form";
-
 import {
   Select,
   SelectContent,
@@ -18,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   deliverTypeSchema,
   userProductSchema,
@@ -41,10 +40,7 @@ function Order() {
   );
 
   const senderPhoneId = import.meta.env.VITE_META_PHONE_NUMBER_ID;
-
   const WHATSAPP_API_URL = `https://graph.facebook.com/v21.0/${senderPhoneId}/messages`;
-
-  console.log(WHATSAPP_API_URL);
 
   const form = useForm<DeleveryType>({
     defaultValues: {
@@ -54,10 +50,8 @@ function Order() {
   });
 
   const onSubmit = async () => {
-    console.log(import.meta.env.VITE_META_FACEBOOK_TOKEN);
     if (!userInfo) return;
     const message = generateMessage({ userInfo, orders });
-
     try {
       const response = await axios.post(
         WHATSAPP_API_URL,
@@ -81,10 +75,12 @@ function Order() {
   };
 
   return (
-    <div>
-      <h3>Etape {currentStep + 1} : Votre commande</h3>
+    <div className="max-w-2xl mx-auto p-6 bg-white shadow-md rounded-lg">
+      <h3 className="text-2xl font-semibold text-center mb-4">
+        Étape {currentStep + 1} : Votre commande
+      </h3>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="deliveryType"
@@ -101,7 +97,7 @@ function Order() {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Fais ton choix" />
+                      <SelectValue placeholder="Faites votre choix" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
@@ -112,24 +108,38 @@ function Order() {
                     ))}
                   </SelectContent>
                 </Select>
-
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex gap-6 py-4">
+
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <Card key={order.id} className="border p-4 shadow-sm">
+                <CardHeader>
+                  <CardTitle>{order.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p>Quantité: {order.quantity}</p>
+                  <p>Prix: {order.price} USD</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="flex justify-between py-4">
             <Button
               type="button"
               onClick={() => dispatch(previousStep())}
-              className="border-2 border-orange-600 bottom-2 bg-transparent text-orange-600 hover:text-white hover:bg-orange-600 hover:border-orange-600 py-5 px-10"
+              className="border-2 border-orange-600 bg-transparent text-orange-600 hover:text-white hover:bg-orange-600 py-3 px-6"
             >
-              Precedent
+              Précédent
             </Button>
             <Button
               type="submit"
-              className="bg-orange-500 hover:bg-orange-600  py-5 px-10 border-2 border-orange-500 hover:border-orange-600"
+              className="bg-orange-500 hover:bg-orange-600 py-3 px-6 border-2 border-orange-500 hover:border-orange-600"
             >
-              Envoyez à KINFOODIES
+              Envoyer à KINFOODIES
             </Button>
           </div>
         </form>
@@ -144,5 +154,5 @@ const deliveryTypeList: { type: DeleveryType["deliveryType"]; name: string }[] =
   [
     { type: "standard", name: "Standard" },
     { type: "express", name: "Express" },
-    { type: "pickup", name: "A emporter" },
+    { type: "pickup", name: "À emporter" },
   ];
