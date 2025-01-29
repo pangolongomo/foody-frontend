@@ -13,3 +13,9 @@ export const orderSchema = z.object({
   order: z.string(),
   orderType: z.enum(["delivery", "pickup"]),
 });
+
+export const informationSchema = orderSchema.omit({
+  order: true,
+  orderType: true,
+  currentPage: true,
+});

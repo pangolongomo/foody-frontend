@@ -1,4 +1,5 @@
 import { z } from "zod";
+import axios from "axios";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrderContext } from "@/pages/Home";
@@ -30,13 +31,44 @@ type DeleveryType = z.infer<typeof deliverySchema>;
 
 function Order() {
   const { dispatch, state } = useOrderContext();
+  const senderPhoneId = import.meta.env.VITE_META_PHONE_NUMBER_ID;
+
+  const WHATSAPP_API_URL = `https://graph.facebook.com/v21.0/${senderPhoneId}/messages`;
+
+  console.log(WHATSAPP_API_URL);
 
   const form = useForm<DeleveryType>({
     resolver: zodResolver(deliverySchema),
+    defaultValues: {
+      orderType: state.orderType,
+      order: state.order,
+    },
   });
 
-  const onSubmit = (data: DeleveryType) => {
-    console.log(state, data);
+  const onSubmit = async (data: DeleveryType) => {
+    console.log(state.order);
+    console.log(import.meta.env.VITE_META_FACEBOOK_TOKEN);
+
+    try {
+      const response = await axios.post(
+        WHATSAPP_API_URL,
+        {
+          messaging_product: "whatsapp",
+          to: state.phone,
+          type: "text",
+          text: { body: data.order },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_META_FACEBOOK_TOKEN}`,
+          },
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -60,35 +92,19 @@ function Order() {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="order"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Commande</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Tapez votre commande ici"
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
+
           <FormField
             control={form.control}
             name="orderType"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a verified email to display" />
+                      <SelectValue placeholder="Fais ton choix" />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>

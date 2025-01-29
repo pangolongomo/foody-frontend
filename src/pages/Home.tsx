@@ -3,11 +3,15 @@ import Information from "@/components/home/information";
 import Order from "@/components/home/order";
 import { createContext, Dispatch, useContext, useReducer } from "react";
 import { actionList } from "@/constants";
-import { orderSchema } from "@/schema";
+import { informationSchema, orderSchema } from "@/schema";
 
 type Action =
-  | { type: typeof actionList.NEXT_PAGE }
-  | { type: typeof actionList.PREV_PAGE };
+  | { type: typeof actionList.NEXT_PAGE; payload?: never }
+  | { type: typeof actionList.PREV_PAGE; payload?: never }
+  | {
+      type: typeof actionList.SET_USER_INFO;
+      payload: z.infer<typeof informationSchema>;
+    };
 
 type OrderContextType = {
   state: InitalState;
@@ -35,9 +39,9 @@ function reducer(state: InitalState, action: Action): InitalState {
     case actionList.PREV_PAGE:
       return { ...state, currentPage: Math.max(state.currentPage - 1, 1) };
     case actionList.NEXT_PAGE:
-      console.log(state.currentPage);
-
       return { ...state, currentPage: state.currentPage + 1 };
+    case actionList.SET_USER_INFO:
+      return { ...state, ...action.payload };
     default:
       return state;
   }

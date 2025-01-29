@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useOrderContext } from "@/pages/Home";
 import { Button } from "../ui/button";
 import { actionList } from "@/constants";
-import { orderSchema } from "@/schema";
+import { informationSchema, orderSchema } from "@/schema";
 import {
   Form,
   FormControl,
@@ -17,23 +17,28 @@ import { Input } from "../ui/input";
 import { PhoneInput } from "../common/phone-input";
 import { Textarea } from "../ui/textarea";
 
-const informationSchema = orderSchema.omit({
-  order: true,
-  orderType: true,
-  currentPage: true,
-});
 type InfoType = z.infer<typeof informationSchema>;
 
 function Information() {
   const { dispatch, state } = useOrderContext();
 
   const form = useForm<InfoType>({
-    // resolver: zodResolver(informationSchema),
+    resolver: zodResolver(informationSchema),
+    defaultValues: {
+      firstname: state.firstname,
+      lastname: state.lastname,
+      phone: state.phone,
+      whatsapp: state.whatsapp,
+      address: state.address,
+      city: state.city,
+      district: state.district,
+      moreInfo: state.moreInfo,
+    },
   });
 
   const onSubmit = (data: InfoType) => {
     console.log(data);
-
+    dispatch({ type: actionList.SET_USER_INFO, payload: data });
     dispatch({ type: actionList.NEXT_PAGE });
   };
 
