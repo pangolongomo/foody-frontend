@@ -17,7 +17,7 @@ function Home() {
       <h3 className="text-center text-5xl font-semibold text-[#ed1b24]">
         Menu
       </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {fastFoodMenu.map((food) => {
           const isOnCard = orders.find((item) => item.id === food.id);
           return (
@@ -25,6 +25,11 @@ function Home() {
               key={food.id}
               className="shadow-lg rounded-3xl p-5 bg-slate-600 text-white space-y-3"
             >
+              <img
+                src={food.image}
+                alt={food.name}
+                className="object-cover w-full h-[10rem] rounded-3xl"
+              />
               <h4>{food.name}</h4>
               <p>{food.price}$</p>
               {isOnCard ? (

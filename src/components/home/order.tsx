@@ -127,15 +127,15 @@ function Order() {
                   <div className="flex gap-2 mt-2">
                     <Button
                       className="rounded-xl text-lg"
-                      onClick={() => dispatch(addProduct(order))}
-                    >
-                      +
-                    </Button>
-                    <Button
-                      className="rounded-xl text-lg"
                       onClick={() => dispatch(removeProduct(order.id))}
                     >
                       -
+                    </Button>
+                    <Button
+                      className="rounded-xl text-lg"
+                      onClick={() => dispatch(addProduct(order))}
+                    >
+                      +
                     </Button>
                   </div>
                 </CardContent>

@@ -20,6 +20,7 @@ export const userInfoSchema = z.object({
 export const userProductSchema = z.object({
   id: z.string().uuid({ message: "L'ID du produit est invalide." }),
   name: z.string().min(1, { message: "Le nom du produit est requis." }),
+  image: z.string().url(),
   quantity: z
     .number()
     .min(1, { message: "La quantité doit être au minimum de 1." }),
