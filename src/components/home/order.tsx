@@ -36,85 +36,90 @@ function Order() {
   });
 
   const onSubmit = (data: DeleveryType) => {
-    console.log(state);
+    console.log(state, data);
   };
 
   return (
     <div>
       <h3>Etape {state.currentPage} : Votre commande</h3>
       <Form {...form}>
-        <FormField
-          control={form.control}
-          name="order"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Commande</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tapez votre commande ici"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="order"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Commande</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tapez votre commande ici"
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="orderType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FormField
+            control={form.control}
+            name="order"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Commande</FormLabel>
                 <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
-                  </SelectTrigger>
+                  <Textarea
+                    placeholder="Tapez votre commande ici"
+                    className="resize-none"
+                    {...field}
+                  />
                 </FormControl>
-                <SelectContent>
-                  {deliveryTypeList.map((item) => (
-                    <SelectItem key={item.type} value={item.type}>
-                      {item.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="order"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Commande</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder="Tapez votre commande ici"
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="orderType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a verified email to display" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {deliveryTypeList.map((item) => (
+                      <SelectItem key={item.type} value={item.type}>
+                        {item.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex gap-6 py-4">
-          <Button
-            type="button"
-            onClick={() => dispatch({ type: actionList.PREV_PAGE })}
-            className="border-2 border-orange-600 bottom-2 bg-transparent text-orange-600 hover:text-white hover:bg-orange-600 hover:border-orange-600 py-5 px-10"
-          >
-            Precedent
-          </Button>
-          <Button
-            type="submit"
-            className="bg-orange-500 hover:bg-orange-600  py-5 px-10 border-2 border-orange-500 hover:border-orange-600"
-          >
-            Envoyez à KINTACOS
-          </Button>
-        </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex gap-6 py-4">
+            <Button
+              type="button"
+              onClick={() => dispatch({ type: actionList.PREV_PAGE })}
+              className="border-2 border-orange-600 bottom-2 bg-transparent text-orange-600 hover:text-white hover:bg-orange-600 hover:border-orange-600 py-5 px-10"
+            >
+              Precedent
+            </Button>
+            <Button
+              type="submit"
+              className="bg-orange-500 hover:bg-orange-600  py-5 px-10 border-2 border-orange-500 hover:border-orange-600"
+            >
+              Envoyez à KINTACOS
+            </Button>
+          </div>
+        </form>
       </Form>
     </div>
   );
