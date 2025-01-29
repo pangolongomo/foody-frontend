@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import NavButton from "../common/NavButton";
 import ToggleNavButton from "../common/ToggleNavButton";
 import { navRoutes } from "@/lib/navRoutes";
@@ -9,7 +9,6 @@ import { Icon } from "@iconify/react";
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const { orders } = useAppSelector((state) => state.orderNavigation);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -27,10 +26,7 @@ function Header() {
               {route.label}
             </NavButton>
           ))}
-          <Badge variant="default" className="space-x-1 hover:bg-[#ed1b24]">
-            <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
-            <span>{orders.length}</span>
-          </Badge>
+          <ShopBadge />
         </ul>
 
         <ToggleNavButton isOpen={isOpen} toggleMenu={toggleMenu} />
@@ -42,10 +38,7 @@ function Header() {
               {route.label}
             </NavButton>
           ))}
-          <Badge variant="default" className="space-x-1 hover:bg-[#ed1b24]">
-            <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
-            <span>{orders.length}</span>
-          </Badge>
+          <ShopBadge />
         </ul>
       )}
     </header>
@@ -53,3 +46,18 @@ function Header() {
 }
 
 export default Header;
+
+const ShopBadge = () => {
+  const navigate = useNavigate();
+  const { orders } = useAppSelector((state) => state.orderNavigation);
+  return (
+    <Badge
+      variant="default"
+      className="space-x-1 hover:bg-[#ed1b24] cursor-pointer"
+      onClick={() => navigate("/orders")}
+    >
+      <Icon icon="iconamoon:shopping-bag-thin" width="24" height="24" />
+      <span>{orders.length}</span>
+    </Badge>
+  );
+};
