@@ -26,6 +26,8 @@ import { generateMessage } from "@/lib/utils";
 import {
   previousStep,
   setDeliveryType,
+  addProduct,
+  removeProduct,
 } from "@/features/orderNavigation/orderNavigationSlice";
 
 type DeleveryType = {
@@ -122,6 +124,20 @@ function Order() {
                 <CardContent>
                   <p>Quantité: {order.quantity}</p>
                   <p>Prix: {order.price} USD</p>
+                  <div className="flex gap-2 mt-2">
+                    <Button
+                      className="rounded-xl text-lg"
+                      onClick={() => dispatch(addProduct(order))}
+                    >
+                      +
+                    </Button>
+                    <Button
+                      className="rounded-xl text-lg"
+                      onClick={() => dispatch(removeProduct(order.id))}
+                    >
+                      -
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             ))}
