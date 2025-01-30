@@ -1,6 +1,23 @@
 import { z } from "zod";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+
+import {
+  deliverTypeSchema,
+  userProductSchema,
+} from "@/features/orderNavigation/orderNavigationSchema";
+
+import { facebookAppApiToken, WHATSAPP_API_URL } from "@/lib/constants";
+
+import { useAppDispatch, useAppSelector } from "@/app/hook";
+import { generateMessage } from "@/lib/utils";
+import {
+  previousStep,
+  setDeliveryType,
+  addProduct,
+  removeProduct,
+} from "@/features/orderNavigation/orderNavigationSlice";
+
 import { Button } from "../ui/button";
 import {
   Form,
@@ -17,18 +34,6 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import {
-  deliverTypeSchema,
-  userProductSchema,
-} from "@/features/orderNavigation/orderNavigationSchema";
-import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { generateMessage } from "@/lib/utils";
-import {
-  previousStep,
-  setDeliveryType,
-  addProduct,
-  removeProduct,
-} from "@/features/orderNavigation/orderNavigationSlice";
 
 type DeleveryType = {
   deliveryType: z.infer<typeof deliverTypeSchema>;
@@ -40,9 +45,6 @@ function Order() {
   const { currentStep, deliveryType, userInfo, orders } = useAppSelector(
     (state) => state.orderNavigation
   );
-
-  const senderPhoneId = import.meta.env.VITE_META_PHONE_NUMBER_ID;
-  const WHATSAPP_API_URL = `https://graph.facebook.com/v21.0/${senderPhoneId}/messages`;
 
   const form = useForm<DeleveryType>({
     defaultValues: {
@@ -66,7 +68,7 @@ function Order() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_META_FACEBOOK_TOKEN}`,
+            Authorization: `Bearer ${facebookAppApiToken}`,
           },
         }
       );
