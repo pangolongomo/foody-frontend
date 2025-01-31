@@ -10,7 +10,7 @@ import {
 import { facebookAppApiToken, WHATSAPP_API_URL } from "@/lib/constants";
 
 import { useAppDispatch, useAppSelector } from "@/app/hook";
-import { generateMessage } from "@/lib/utils";
+import { orderItemsText } from "@/lib/utils";
 import {
   previousStep,
   setDeliveryType,
@@ -55,15 +55,33 @@ function Order() {
 
   const onSubmit = async () => {
     if (!userInfo) return;
-    const message = generateMessage({ userInfo, orders });
+    // const message = generateMessage({ userInfo, orders });
     try {
       const response = await axios.post(
         WHATSAPP_API_URL,
         {
           messaging_product: "whatsapp",
-          to: userInfo?.whatsapp,
-          type: "text",
-          text: { body: message },
+          to: userInfo?.whatsapp.replace("+", ""),
+          type: "template",
+          template: {
+            name: "order_confirmation",
+            language: { code: "fr" },
+            components: [
+              {
+                type: "body",
+                parameters: [
+                  { type: "text", text: userInfo.firstname || "Cher client" },
+                  { type: "text", text: userInfo.whatsapp || userInfo.phone },
+                  {
+                    type: "text",
+                    text: orders.length
+                      ? orderItemsText(orders)
+                      : "choisi un produit",
+                  },
+                ],
+              },
+            ],
+          },
         },
         {
           headers: {
@@ -72,7 +90,7 @@ function Order() {
           },
         }
       );
-      console.log(response);
+      console.log(response.data);
     } catch (error) {
       console.log(error);
     }
@@ -128,12 +146,14 @@ function Order() {
                   <p>Prix: {order.price} USD</p>
                   <div className="flex gap-2 mt-2">
                     <Button
+                      type="button"
                       className="rounded-xl text-lg"
                       onClick={() => dispatch(removeProduct(order.id))}
                     >
                       -
                     </Button>
                     <Button
+                      type="button"
                       className="rounded-xl text-lg"
                       onClick={() => dispatch(addProduct(order))}
                     >

@@ -32,25 +32,25 @@ function Home() {
               />
               <h4>{food.name}</h4>
               <p>{food.price}$</p>
-              {isOnCard ? (
-                <div className="flex gap-2 items-center">
-                  <Button
-                    className="rounded-xl text-lg"
-                    onClick={() => dispatch(removeProduct(isOnCard.id))}
-                  >
-                    -
-                  </Button>
+              <div className="flex gap-2 items-center justify-end">
+                {isOnCard ? (
+                  <>
+                    <Button
+                      className="rounded-xl text-lg"
+                      onClick={() => dispatch(removeProduct(isOnCard.id))}
+                    >
+                      -
+                    </Button>
 
-                  {isOnCard.quantity}
-                  <Button
-                    className="rounded-xl text-lg"
-                    onClick={() => dispatch(addProduct(isOnCard))}
-                  >
-                    +
-                  </Button>
-                </div>
-              ) : (
-                <div>
+                    {isOnCard.quantity}
+                    <Button
+                      className="rounded-xl text-lg"
+                      onClick={() => dispatch(addProduct(isOnCard))}
+                    >
+                      +
+                    </Button>
+                  </>
+                ) : (
                   <Button
                     className="rounded-xl text-lg"
                     onClick={() =>
@@ -59,8 +59,8 @@ function Home() {
                   >
                     +
                   </Button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           );
         })}

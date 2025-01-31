@@ -16,6 +16,16 @@ type OrderNavigationState = {
 const initialState: OrderNavigationState = {
   currentStep: 0,
   orders: [],
+  userInfo: {
+    firstname: "",
+    lastname: "",
+    phone: "",
+    whatsapp: "",
+    address: "",
+    city: "",
+    district: "",
+    moreInfo: "",
+  },
   deliveryType: "express",
 };
 
